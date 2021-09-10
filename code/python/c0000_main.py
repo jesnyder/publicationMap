@@ -1,3 +1,7 @@
+from c0001_dim_image import dim_image
+from c0002_plot_df import plot_df
+from c0003_make_gif import make_gif
+
 import os
 import matplotlib
 import matplotlib.pyplot as plt
@@ -26,59 +30,53 @@ def main():
             del df[name]
 
     df = df.dropna()
+    df = df.sort_values(by=['publishedYear' , 'publishedMonth'])
+
+    gpsLat = list(df['gpsLat'])
+    for i in range(len(gpsLat)): gpsLat[i] = float(gpsLat[i])
+
+    # add months lapsed to each row
+    monthsLapsedList = []
+    for i in range(len(gpsLat)):
+        monthsLapsed = (2021-float(df.iloc[i]['publishedYear'])-1)*12+9+(12-float(df.iloc[i]['publishedMonth']))
+        monthsLapsedList.append(monthsLapsed)
+    df['monthsLapsed'] = monthsLapsedList
+    monthsLapsed = list(df['monthsLapsed'])
 
     print('df = ')
     print(df)
 
-    gpsLat = list(df['gpsLat'])
-    gpsLong = list(df['gpsLong'])
-    citations = list(df['citations'])
+    publishedYear = list(df['publishedYear'])
+    for i in range(len(publishedYear)): publishedYear[i] = float(publishedYear[i])
+    monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Aug', 'Oct', 'Nov', 'Dec']
+    minPubYear = str(int(min(publishedYear)))
+    minMonthIndex = int(df.iloc[0]['publishedMonth'])-1
+    minPubMonth = monthList[minMonthIndex]
+    monthYearList = []
+    for i in range(int(max(monthsLapsed))):
 
-    for i in range(len(gpsLat)): gpsLat[i] = float(gpsLat[i])
-    for i in range(len(gpsLong)): gpsLong[i] = float(gpsLong[i])
-    for i in range(len(citations)): citations[i] = float(citations[i])
+        monthName = monthList[int((i+minMonthIndex)%12)]
+        print('monthName = ' + str(monthName))
+        yearName =  int(minPubYear) + int((i+minMonthIndex)/12)
+        monthYearList.append(str(monthName + ' ' + str(yearName)))
 
-    figure, axes = plt.subplots()
+    # print('monthYearList = ')
+    # print(monthYearList)
 
-
-    map_path = os.path.join('..', '..', 'blankMap')
-    map_file = os.path.join(map_path, 'blankMap' + '.png')
-    print('map_file = ')
-    print(map_file)
-    origin = [-0.5, 6.5, -0.5, 5.5]
-    img = plt.imread(map_file, origin=origin)
-    # fig, ax = plt.subplots()
-    axes.imshow(img)
+    # df['monthYear'] = monthYearList
+    metadata_file = os.path.join(metadata_path, 'metadata' + '_' + str('editted') + '.csv')
+    df.to_csv(metadata_file)
 
 
-    for i in range(len(gpsLat)):
+    for i in range(int(max(monthsLapsed))):
 
-        xx = float(gpsLong[i])
-        yy = float(gpsLat[i])
-        rr = 10*float(citations[i])
-        print('xx, yy, rr = ' + str(xx) + ' , ' + str(yy) + ' , ' + str(rr))
+        month = max(monthsLapsed)-i
+        df_monthly = df.drop(df[df['monthsLapsed'] < month].index)
+        plot_df(df_monthly, i, monthYearList)
+        print('% complete = ' + str(i/max(monthsLapsed)))
 
-        colorMarker = [0.5, 0, 0]
-        colorEdge = [0.5, 0, 0]
-        for j in range(len(colorMarker)):
-            variant = (max(citations) - citations[i]) / (max(citations) - min(citations))
-            if j == 0: colorMarker[j] = variant
-            elif j == 1:  colorMarker[j] = 0
-            elif j == 2:  colorMarker[j] = 1- variant
-            colorEdge[j] = 0.5*colorMarker[j]
+    make_gif()
 
-            print('colorMarker / colorEdge = ')
-            print(colorMarker)
-            print(colorEdge)
-
-        plt.scatter(xx, yy, s = rr, color=colorMarker, edgecolors=colorEdge)
-
-    plt.title( 'Colored Circle' )
-
-    path = os.path.join('..', '..', 'plots')
-    if not os.path.isdir(path): os.mkdir(path)
-    file = os.path.join(path, 'test' + ".png")
-    plt.savefig(file, bbox_inches='tight')
 
 if __name__ == "__main__":
     main()
