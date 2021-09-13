@@ -39,4 +39,4 @@ def make_gif():
         frames[0].save(save_file, format='GIF',
                append_images=frames[1:],
                save_all=True,
-               duration=400, loop=0)
+               duration=300, loop=0)

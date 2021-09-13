@@ -1,4 +1,4 @@
-from c0001_dim_image import dim_image
+from c0101_dim_image import dim_image
 
 import os
 import math
@@ -52,8 +52,8 @@ def plot_df(df, monthIndex, monthYearList):
         xx = float(gpsLong[i])
         yy = float(gpsLat[i])
         rr = citations[i]/monthsLapsed[i]*(monthIndex - (max(monthsLapsed)-monthsLapsed[i]))+1
-        rr = 100*rr
-        rr = 1/3.14159*math.sqrt(rr)
+        rr = 5*rr
+        # rr = 1/3.14159*math.sqrt(rr)
         # print('xx, yy, rr = ' + str(xx) + ' , ' + str(yy) + ' , ' + str(rr))
         assert rr > 0
 
@@ -96,7 +96,7 @@ def plot_df(df, monthIndex, monthYearList):
         path = os.path.join('..', '..', 'plots')
         if not os.path.isdir(path): os.mkdir(path)
         file = os.path.join(path, 'month' + str(monthIndex).zfill(2) + ".png")
-        plt.savefig(file, bbox_inches='tight')
+        plt.savefig(file, bbox_inches='tight', dpi=600)
 
 
 if __name__ == "__main__":
