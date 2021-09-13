@@ -71,8 +71,15 @@ def main():
     for i in range(int(max(monthsLapsed))):
 
         month = max(monthsLapsed)-i
+
         df_monthly = df.drop(df[df['monthsLapsed'] < month].index)
+
+        currentMonth = 12-int((month+minMonthIndex)%12)
+        currentYear = max(list(df_monthly['publishedYear']))
+        monthYearList = str( str(minMonthIndex) + '/' + str(minPubYear) + '-' + str(currentMonth) + '/' + str(currentYear))
+
         plot_df(df_monthly, i, monthYearList)
+
         print('% complete = ' + str(i/max(monthsLapsed)))
 
     make_gif()

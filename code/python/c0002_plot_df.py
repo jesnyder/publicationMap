@@ -1,6 +1,7 @@
 from c0001_dim_image import dim_image
 
 import os
+import math
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,9 +12,6 @@ def plot_df(df, monthIndex, monthYearList):
     """
 
     """
-
-    minTime = monthYearList[0]
-    maxTime = monthYearList[monthIndex]
 
     print("running plot_df")
 
@@ -38,7 +36,7 @@ def plot_df(df, monthIndex, monthYearList):
     figure, axes = plt.subplots()
 
     map_path = os.path.join('..', '..', 'blankMap')
-    map_file = os.path.join(map_path, 'blankMap10' + '.png')
+    map_file = os.path.join(map_path, 'blankMap14' + '.png')
     img = plt.imread(map_file)
     # img = dim_image(img)
 
@@ -53,7 +51,9 @@ def plot_df(df, monthIndex, monthYearList):
 
         xx = float(gpsLong[i])
         yy = float(gpsLat[i])
-        rr = 10*citations[i]/monthsLapsed[i]*(monthIndex - (max(monthsLapsed)-monthsLapsed[i]))+1
+        rr = citations[i]/monthsLapsed[i]*(monthIndex - (max(monthsLapsed)-monthsLapsed[i]))+1
+        rr = 100*rr
+        rr = 1/3.14159*math.sqrt(rr)
         # print('xx, yy, rr = ' + str(xx) + ' , ' + str(yy) + ' , ' + str(rr))
         assert rr > 0
 
@@ -88,10 +88,10 @@ def plot_df(df, monthIndex, monthYearList):
 
         colorEdge[j] = 0.85*colorMarker[j]
 
-        plt.scatter(xx, yy, s = rr, color=colorMarker, edgecolors=colorEdge)
+        plt.scatter(xx, yy, s = rr, color=colorMarker, edgecolors=colorEdge, linewidths=0.1)
 
         axes.axis('off')
-        plt.title( 'SI-Indexed Impact of Publications Citing RoosterBio Tech')
+        plt.title( 'SI-Indexed Impact of RoosterBio Tech:' + monthYearList)
 
         path = os.path.join('..', '..', 'plots')
         if not os.path.isdir(path): os.mkdir(path)
