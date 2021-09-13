@@ -46,8 +46,10 @@ def build_plots():
     # print('df = ')
     # print(df)
 
+    publishedYear = list(df['publishedYear'])
     minPubYear = str(int(min(publishedYear)))
     minMonthIndex = int(df.iloc[0]['publishedMonth'])-1
+
 
     """
     publishedYear = list(df['publishedYear'])
