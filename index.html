@@ -17,9 +17,20 @@
   </div>
 
   <center>
-  <img src="gif/publicationsMap.gif" alt="My Project GIF" width="1200" height="600">
+  <img src="gif/publicationsMap.gif" alt="Map of Research using RoosterBio Tech " width="1200" height="600">
   </center>
+
   <div id="chartDiv" style="width:80%; height:300px; margin:0 auto;"></div>
+
+  <div id="CSVTable"></div>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//jquerycsvtotable.googlecode.com/files/jquery.csvToTable.js"></script>
+  <script>
+  $(function() {
+    $('#CSVTable').CSVToTable("metadata/publishedMetadata.csv");
+  });
+  </script>
+  }
 
 </body>
 

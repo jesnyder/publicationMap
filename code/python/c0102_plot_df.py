@@ -1,4 +1,5 @@
 from c0101_dim_image import dim_image
+from c0103_retrieve_ref import retrieve_ref
 
 import os
 import math
@@ -88,7 +89,7 @@ def plot_df(df, monthIndex, monthYearList):
 
         colorEdge[j] = 0.85*colorMarker[j]
 
-        plt.scatter(xx, yy, s = rr, color=colorMarker, edgecolors=colorEdge, linewidths=0.1)
+        plt.scatter(xx, yy, s = rr, color=colorMarker, alpha=0.5, edgecolors=colorEdge, linewidths=0.1)
 
         axes.axis('off')
         plt.title( 'SI-Indexed Impact of RoosterBio Tech:' + monthYearList)
@@ -96,7 +97,9 @@ def plot_df(df, monthIndex, monthYearList):
         path = os.path.join('..', '..', 'plots')
         if not os.path.isdir(path): os.mkdir(path)
         file = os.path.join(path, 'month' + str(monthIndex).zfill(2) + ".png")
-        plt.savefig(file, bbox_inches='tight', dpi=600)
+
+        plot_dpi = retrieve_ref('plot_dpi')
+        plt.savefig(file, bbox_inches='tight', dpi=150)
 
 
 if __name__ == "__main__":
