@@ -37,6 +37,14 @@ def plot_df(df, monthIndex, monthYearList):
     plt.close('all')
     figure, axes = plt.subplots()
 
+    fontSize = retrieve_ref('fontSize')
+    font = {'family' : 'normal',
+        'weight' : 'bold',
+        'size'   : fontSize}
+    plt.rc('font', **font)
+    plt.rc('font', size=fontSize)
+    plt.rc('axes', titlesize=fontSize)
+
     map_path = os.path.join('..', '..', 'blankMap')
     map_file = os.path.join(map_path, 'blankMap14' + '.png')
     img = plt.imread(map_file)

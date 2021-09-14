@@ -15,7 +15,7 @@ def main():
     print("running main")
 
     # map citations per publications per month
-    # build_plots()
+    build_plots()
 
     # build gif from plots
     make_gif()
