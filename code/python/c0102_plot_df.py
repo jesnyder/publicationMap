@@ -26,6 +26,7 @@ def plot_df(df, monthIndex, monthYearList):
     gpsLong = list(df['gpsLong'])
     citations = list(df['citations'])
     monthsLapsed = list(df['monthsLapsed'])
+    titleList = list(df['titlePaper'])
 
     for i in range(len(gpsLat)): gpsLat[i] = float(gpsLat[i])
     for i in range(len(gpsLong)): gpsLong[i] = float(gpsLong[i])
@@ -33,7 +34,7 @@ def plot_df(df, monthIndex, monthYearList):
     for i in range(len(publishedYear)): publishedYear[i] = float(publishedYear[i])
     for i in range(len(publishedMonth)): publishedMonth[i] = float(publishedMonth[i])
 
-
+    plt.close('all')
     figure, axes = plt.subplots()
 
     map_path = os.path.join('..', '..', 'blankMap')
@@ -72,24 +73,27 @@ def plot_df(df, monthIndex, monthYearList):
             variant = random.randint(0,50)
             variant = variant/50
 
-            if citations[i]%3 == 0:
-                if j == 0: colorMarker[j] = 1-0.5*variant
-                if j == 1:  colorMarker[j] = 0
-                if j == 2:  colorMarker[j] = 0.95
+            colorRefValue = len(titleList[i])
+            if colorRefValue%3 == 0:
+                if j == 0: colorMarker[j] = 1
+                if j == 1:  colorMarker[j] = 1-0.5*variant
+                if j == 2:  colorMarker[j] = 0
 
-            if citations[i]%3 == 1:
-                if j == 0: colorMarker[j] = 0
-                if j == 1:  colorMarker[j] = 0.95
-                if j == 2:  colorMarker[j] = 1-0.5*variant
+            if colorRefValue%3 == 1:
+                if j == 0: colorMarker[j] = 1
+                if j == 1:  colorMarker[j] = 0.75-0.5*variant
+                if j == 2:  colorMarker[j] = 0.75*variant
 
-            if citations[i]%3 == 2:
+            if colorRefValue%3 == 2:
                 if j == 0: colorMarker[j] = 0
                 if j == 1:  colorMarker[j] = 1-0.5*variant
-                if j == 2:  colorMarker[j] = 0.95
+                if j == 2:  colorMarker[j] = 0.99
 
         colorEdge[j] = 0.85*colorMarker[j]
 
-        plt.scatter(xx, yy, s = rr, color=colorMarker, alpha=0.5, edgecolors=colorEdge, linewidths=0.1)
+        scatterTransparency = retrieve_ref('scatterTransparency')
+        if citations[i] < 30: scatterTransparency = 0.8
+        plt.scatter(xx, yy, s = rr, color=colorMarker, alpha=float(scatterTransparency), edgecolors=colorEdge, linewidths=0.1)
 
         axes.axis('off')
         plt.title( 'SI-Indexed Impact of RoosterBio Tech:' + monthYearList)
@@ -99,7 +103,10 @@ def plot_df(df, monthIndex, monthYearList):
         file = os.path.join(path, 'month' + str(monthIndex).zfill(2) + ".png")
 
         plot_dpi = retrieve_ref('plot_dpi')
-        plt.savefig(file, bbox_inches='tight', dpi=150)
+        plt.savefig(file, bbox_inches='tight', dpi=plot_dpi)
+
+
+
 
 
 if __name__ == "__main__":

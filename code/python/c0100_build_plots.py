@@ -16,12 +16,7 @@ def build_plots():
     print("running main")
 
     metadata_path = os.path.join('..', '..', 'metadata')
-    print('metadata_path = ')
-    print(metadata_path)
     metadata_file = os.path.join(metadata_path, 'publishedMetadata.csv')
-    print('metadata_file = ')
-    print(metadata_file)
-
     df = pd.read_csv(metadata_file)
 
     col_names = df.head()
@@ -31,63 +26,44 @@ def build_plots():
 
     df = df.dropna()
     df = df.sort_values(by=['publishedYear' , 'publishedMonth'])
+    minPubMonth = int(df.iloc[0]['publishedMonth'])
+    minPubYear = int(df.iloc[0]['publishedYear'])
+    print('Earliest Publication Date: ' + str(minPubMonth) + '/' + str(minPubYear))
 
     gpsLat = list(df['gpsLat'])
     for i in range(len(gpsLat)): gpsLat[i] = float(gpsLat[i])
 
+
     # add months lapsed to each row
     monthsLapsedList = []
-    for i in range(len(gpsLat)):
+    for i in range(len( list(df['gpsLat']))):
         monthsLapsed = (2021-float(df.iloc[i]['publishedYear'])-1)*12+9+(12-float(df.iloc[i]['publishedMonth']))
         monthsLapsedList.append(monthsLapsed)
     df['monthsLapsed'] = monthsLapsedList
     monthsLapsed = list(df['monthsLapsed'])
 
-    # print('df = ')
-    # print(df)
 
-    publishedYear = list(df['publishedYear'])
-    minPubYear = str(int(min(publishedYear)))
-    minMonthIndex = int(df.iloc[0]['publishedMonth'])-1
-
-
-    """
-    publishedYear = list(df['publishedYear'])
-    for i in range(len(publishedYear)): publishedYear[i] = float(publishedYear[i])
-    monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Aug', 'Oct', 'Nov', 'Dec']
-    minPubMonth = monthList[minMonthIndex]
-    monthYearList = []
-    for i in range(int(max(monthsLapsed))):
-        monthName = monthList[int((i+minMonthIndex)%12)]
-        print('monthName = ' + str(monthName))
-        yearName =  int(minPubYear) + int((i+minMonthIndex)/12)
-        monthYearList.append(str(monthName + ' ' + str(yearName)))
-    # print('monthYearList = ')
-    # print(monthYearList)
-    """
-
-    # df['monthYear'] = monthYearList
+    df_saved = df.sort_values(by=['monthsLapsed'])
     metadata_file = os.path.join(metadata_path, 'metadata' + '_' + str('editted') + '.csv')
-    df.to_csv(metadata_file)
+    df_saved.to_csv(metadata_file)
 
-
+    monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     for i in range(int(max(monthsLapsed))):
 
         month = max(monthsLapsed)-i
-
         df_monthly = df.drop(df[df['monthsLapsed'] < month].index)
 
-        if month+minMonthIndex <=12:
-            currentMonth = month+minMonthIndex
-        else:
-            currentMonth = 12-int((month+minMonthIndex)%12)
+        currentMonth =  (i + minPubMonth)%12
+        currentYear = int(minPubYear + int((i + minPubMonth-1)/12))
+        # currentYear = max(list(df_monthly['publishedYear']))
 
-        currentYear = max(list(df_monthly['publishedYear']))
-        monthYearList = str( str(minMonthIndex) + '/' + str(minPubYear) + '-' + str(currentMonth) + '/' + str(currentYear))
+        minPubMonthName = monthList[int(minPubMonth-1)]
+        currentMonthName = monthList[int(currentMonth-1)]
+        monthYearList = str( str(minPubMonthName) + ' ' + str(minPubYear) + '-' + str(currentMonthName) + ' ' + str(currentYear))
 
         plot_df(df_monthly, i, monthYearList)
 
-        print('% complete = ' + str(i/max(monthsLapsed)))
+        print(monthYearList + '  | % complete = ' + str(100*round(i/max(monthsLapsed),2)))
 
     make_gif()
 
