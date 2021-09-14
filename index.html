@@ -37,29 +37,8 @@
   <img src="gif/publicationsMap.gif" alt="Map of Research using RoosterBio Tech " width="800" height="400">
   </center>
 
-  <div id="chartDiv" style="width:80%; height:300px; margin:0 auto;"></div>
-
-  <div id="CSVTable"></div>
-  <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
-<script src="d3.min.js?v=3.2.8"></script>
-
-<script type="text/javascript"charset="utf-8">
-    d3.text("metadata/publishedMetadata.csv", function(data) {
-        var parsedCSV = d3.csv.parseRows(data);
-
-        var container = d3.select("body")
-            .append("table")
-
-            .selectAll("tr")
-                .data(parsedCSV).enter()
-                .append("tr")
-
-            .selectAll("td")
-                .data(function(d) { return d; }).enter()
-                .append("td")
-                .text(function(d) { return d; });
-    });
-</script>
+  <p> GitHub Repo: https://github.com/jesnyder/publicationMap </p>
+  <p> Source Data: https://github.com/jesnyder/publicationMap/blob/main/metadata/metadata_editted.csv </p>
 
 
 </body>
