@@ -1,5 +1,6 @@
 from c0101_dim_image import dim_image
 from c0102_plot_df import plot_df
+from c0104_save_totals import save_totals
 from c0200_make_gif import make_gif
 
 import os
@@ -25,6 +26,9 @@ def build_plots():
             del df[name]
 
     df = df.dropna()
+
+    save_totals(metadata_path)
+
     df = df.sort_values(by=['publishedYear' , 'publishedMonth'])
     minPubMonth = int(df.iloc[0]['publishedMonth'])
     minPubYear = int(df.iloc[0]['publishedYear'])
