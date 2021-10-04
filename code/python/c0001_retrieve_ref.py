@@ -4,10 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-
 def retrieve_ref(variableName):
 
-    ref_path = os.path.join('..', '..', 'metadata')
+    ref_path = os.path.join( 'metadata')
     ref_file = os.path.join(ref_path, 'ref.csv')
     df = pd.read_csv(ref_file)
 

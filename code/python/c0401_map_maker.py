@@ -1,15 +1,13 @@
-from c0101_dim_image import dim_image
-from c0103_retrieve_ref import retrieve_ref
+from c0001_retrieve_ref import retrieve_ref
 
 import os
 import math
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import random
 
-def plot_df(df, monthIndex, monthYearList):
+def map_maker(df, monthIndex, monthYearList, blank_map_file_name):
     """
 
     """
@@ -45,17 +43,21 @@ def plot_df(df, monthIndex, monthYearList):
     plt.rc('font', size=fontSize)
     plt.rc('axes', titlesize=fontSize)
 
-    map_path = os.path.join('..', '..', 'blankMap')
-    map_file = os.path.join(map_path, 'blankMap14' + '.png')
+    map_path = os.path.join('blankMap')
+    # map_file_name = str('blankMap' + str(14))
+    map_file = os.path.join(map_path, blank_map_file_name + '.png')
     img = plt.imread(map_file)
     # img = dim_image(img)
 
     #origin = [-180, 180, -90, 90]
     extent = [-180, 180, -90, 90]
+
+    if blank_map_file_name == 'blankMap17' or blank_map_file_name == 'blankMap18':
+
+        extent = [-170, 190, -58, 108]
+
     # axes.imshow(img, origin=origin, extent=extent)
     axes.imshow(img, extent=extent)
-
-
 
     for i in range(len(gpsLat)):
 
@@ -66,6 +68,12 @@ def plot_df(df, monthIndex, monthYearList):
         # rr = 1/3.14159*math.sqrt(rr)
         # print('xx, yy, rr = ' + str(xx) + ' , ' + str(yy) + ' , ' + str(rr))
         assert rr > 0
+
+        colorOrange = [240/255, 83/255, 35/255]
+        colorPurple = [23/255, 27/255, 96/255]
+        colorBlueDark = [0/255, 153/255, 216/255]
+        colorBlueLight = [0/255, 188/255, 231/255]
+        colorGray = [233/255, 225/255, 223/255]
 
         colorMarker = [0, 0, 0]
         colorEdge = [0, 0, 0]
@@ -78,43 +86,48 @@ def plot_df(df, monthIndex, monthYearList):
             else:
                 variant = 0.5
 
-            variant = random.randint(0,50)
+            variant = random.randint(-50,50)
             variant = variant/50
 
             colorRefValue = len(titleList[i])
             if colorRefValue%3 == 0:
-                if j == 0: colorMarker[j] = 1
-                if j == 1:  colorMarker[j] = 1-0.5*variant
-                if j == 2:  colorMarker[j] = 0
+                if j == 0: colorMarker[j] = colorOrange[0] + variant*0.1
+                if j == 1:  colorMarker[j] = colorOrange[1] - variant*0.15
+                if j == 2:  colorMarker[j] = colorOrange[2] + variant*0.15
 
             if colorRefValue%3 == 1:
-                if j == 0: colorMarker[j] = 1
-                if j == 1:  colorMarker[j] = 0.75-0.5*variant
-                if j == 2:  colorMarker[j] = 0.75*variant
+                if j == 0:  colorMarker[j] = colorBlueDark[0] - variant*0.15
+                if j == 1:  colorMarker[j] = colorBlueDark[1] + variant*0.15
+                if j == 2:  colorMarker[j] = colorBlueDark[2] + variant*0.1
 
             if colorRefValue%3 == 2:
-                if j == 0: colorMarker[j] = 0
-                if j == 1:  colorMarker[j] = 1-0.5*variant
-                if j == 2:  colorMarker[j] = 0.99
+                if j == 0: colorMarker[j] = colorBlueLight[0] - variant*0.15
+                if j == 1:  colorMarker[j] = colorBlueLight[1] + variant*0.15
+                if j == 2:  colorMarker[j] = colorBlueLight[2] + variant*0.1
+
+        for ii in range(len(colorMarker)):
+            colorMarker[ii] = round(colorMarker[ii],4)
+            if colorMarker[ii] > 1: colorMarker[ii] = 1
+            elif colorMarker[ii] < 0: colorMarker[ii] = 0
 
         colorEdge[j] = 0.85*colorMarker[j]
+
+        print('colorMarker = ')
+        print(colorMarker)
 
         scatterTransparency = retrieve_ref('scatterTransparency')
         if citations[i] < 30: scatterTransparency = 0.8
         plt.scatter(xx, yy, s = rr, color=colorMarker, alpha=float(scatterTransparency), edgecolors=colorEdge, linewidths=0.1)
 
-        axes.axis('off')
-        plt.title( 'SI-Indexed Impact of RoosterBio Tech:' + monthYearList)
+    axes.axis('off')
+    plt.title( 'SI-Indexed Impact of RoosterBio Tech: ' + monthYearList, fontname='sans-serif')
 
-        path = os.path.join('..', '..', 'plots')
-        if not os.path.isdir(path): os.mkdir(path)
-        file = os.path.join(path, 'month' + str(monthIndex).zfill(2) + ".png")
+    path = os.path.join('plots', blank_map_file_name)
+    if not os.path.isdir(path): os.mkdir(path)
+    file = os.path.join(path, 'month' + str(monthIndex).zfill(2) + ".png")
 
-        plot_dpi = retrieve_ref('plot_dpi')
-        plt.savefig(file, bbox_inches='tight', dpi=plot_dpi)
-
-
-
+    plot_dpi = retrieve_ref('plot_dpi')
+    plt.savefig(file, bbox_inches='tight', dpi=plot_dpi)
 
 
 if __name__ == "__main__":

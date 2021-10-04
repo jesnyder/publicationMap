@@ -2,23 +2,24 @@ from PIL import Image
 import glob
 
 import os
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-def make_gif():
+def build_gif():
     """
 
     """
 
-    print('making gif')
-    path = os.path.join('..', '..', 'plots')
+    blank_map_file_name = 'blankMap17'
+
+    print('building gif')
+    path = os.path.join('plots', blank_map_file_name)
 
     frames = []
     png_file = os.path.join(path, "*.png")
 
-    path = os.path.join('..', '..', 'gif')
+    path = os.path.join( 'gif', blank_map_file_name)
     if not os.path.isdir(path): os.mkdir(path)
     save_file = os.path.join(path, 'publicationsMap' + '.gif')
 
