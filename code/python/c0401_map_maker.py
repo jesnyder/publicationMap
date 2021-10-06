@@ -14,7 +14,13 @@ def map_maker(df, monthIndex, monthYearList, blank_map_file_name):
 
     print("running plot_df")
 
+    plot_dpi = retrieve_ref('plot_dpi')
+
+    print('df = ')
+    print(df)
+
     df = df.sort_values(by=['citations'], ascending=False)
+    radius, reds, greens, blues = [], [], [], []
     # print('df = ')
     # print(df)
 
@@ -63,10 +69,11 @@ def map_maker(df, monthIndex, monthYearList, blank_map_file_name):
 
         xx = float(gpsLong[i])
         yy = float(gpsLat[i])
-        rr = citations[i]/monthsLapsed[i]*(monthIndex - (max(monthsLapsed)-monthsLapsed[i]))+1
+        rr = (citations[i]+1)/monthsLapsed[i]*(monthIndex - (max(monthsLapsed)-monthsLapsed[i]))+1
         rr = 5*rr
         # rr = 1/3.14159*math.sqrt(rr)
         # print('xx, yy, rr = ' + str(xx) + ' , ' + str(yy) + ' , ' + str(rr))
+        # print('rr = ' + str(rr))
         assert rr > 0
 
         colorOrange = [240/255, 83/255, 35/255]
@@ -112,23 +119,42 @@ def map_maker(df, monthIndex, monthYearList, blank_map_file_name):
 
         colorEdge[j] = 0.85*colorMarker[j]
 
-        print('colorMarker = ')
-        print(colorMarker)
+        # print('colorMarker = ')
+        # print(colorMarker)
 
         scatterTransparency = retrieve_ref('scatterTransparency')
         if citations[i] < 30: scatterTransparency = 0.8
         plt.scatter(xx, yy, s = rr, color=colorMarker, alpha=float(scatterTransparency), edgecolors=colorEdge, linewidths=0.1)
 
+        radius.append(rr)
+        reds.append(colorMarker[0])
+        greens.append(colorMarker[0])
+        blues.append(colorMarker[0])
+
+
     axes.axis('off')
     plt.title( 'SI-Indexed Impact of RoosterBio Tech: ' + monthYearList, fontname='sans-serif')
 
+    path = os.path.join('plots')
+    if not os.path.isdir(path): os.mkdir(path)
     path = os.path.join('plots', blank_map_file_name)
+    if not os.path.isdir(path): os.mkdir(path)
+    path = os.path.join('plots', blank_map_file_name, str(int(plot_dpi)))
     if not os.path.isdir(path): os.mkdir(path)
     file = os.path.join(path, 'month' + str(monthIndex).zfill(2) + ".png")
 
-    plot_dpi = retrieve_ref('plot_dpi')
     plt.savefig(file, bbox_inches='tight', dpi=plot_dpi)
 
+
+    df['radius'] = radius
+    df['red'] = reds
+    df['green'] = greens
+    df['blue'] = blues
+
+    path = os.path.join('dfMonthly')
+    if not os.path.isdir(path): os.mkdir(path)
+    file = os.path.join(path, 'month' + str(monthIndex).zfill(2) + ".csv")
+    df.to_csv(file)
 
 if __name__ == "__main__":
     main()

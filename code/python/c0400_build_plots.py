@@ -25,6 +25,14 @@ def build_plots():
         if 'Unnamed' in name:
             del df[name]
 
+    # df = df.replace(np.NaN, 100, inplace=True)
+    # df = df.replace('NaN', 100, inplace=True)
+    df["titlePaper"].fillna("No Title", inplace = True)
+    df = df.drop(df[df['titlePaper'] == "No Title"].index)
+    df.fillna("0", inplace = True)
+    df = df.drop(df[df['count'] == "0"].index)
+    print(df)
+
     # df = df.dropna()
 
     df = df.sort_values(by=['publishedYear' , 'publishedMonth'])
