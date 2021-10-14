@@ -30,7 +30,7 @@ def build_plots():
     df["titlePaper"].fillna("No Title", inplace = True)
     df = df.drop(df[df['titlePaper'] == "No Title"].index)
     df.fillna("0", inplace = True)
-    df = df.drop(df[df['count'] == "0"].index)
+    df = df.drop(df[df['citations'] == "0"].index)
     print(df)
 
     # df = df.dropna()
@@ -49,7 +49,7 @@ def build_plots():
     for i in range(len( list(df['gpsLat']))):
 
         if math.isnan(df.iloc[i]['publishedYear']) == False :
-            monthsLapsed = (2021-float(df.iloc[i]['publishedYear'])-1)*12+9+(12-float(df.iloc[i]['publishedMonth']))
+            monthsLapsed = (2021-float(df.iloc[i]['publishedYear'])-1)*12+11+(12-float(df.iloc[i]['publishedMonth']))
             monthsLapsedList.append(int(monthsLapsed))
 
         else: monthsLapsedList.append(np.nan)

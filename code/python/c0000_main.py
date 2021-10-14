@@ -31,7 +31,7 @@ def main():
     # Review the note above
     # Identify which tasks need to be run
     # List the task numbers that need to be run below
-    tasks = [5]
+    tasks = [4, 5]
 
     if 1 in tasks: search_resources()
     if 2 in tasks: identify_gps_coordinates()
